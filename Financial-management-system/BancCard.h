@@ -6,31 +6,36 @@ using std::ostream;
 using std::vector;
 using std::endl;
 
-struct Expences
+class Expenses
 {
 	string name;
 	int cost;
-	Expences(string name, int cost) : name{ name }, cost{ cost } {}
-	friend ostream& operator << (ostream& out, Expences expences) {
-		out << expences.name << " --\t" << expences.cost << endl;
+public:
+	Expenses(string name, int cost) : name{ name }, cost{ cost } {}
+	Expenses(Expenses&& expenses) : name{ name }, cost{ cost } {}
+	friend ostream& operator << (ostream& out, Expenses expenses) {
+		out << expenses.name << " --\t" << expenses.cost << endl;
 	}
 };
 
-class Categories {
-	vector<Expences> SportAndMedicine;
-	vector<Expences> Groceries;
-	vector<Expences> RestaurantAndEntertainment;
-	vector<Expences> TrevelingAndFuel;
-	vector<Expences> other;
+struct Categories {
+public:
+	vector<Expenses> SportAndMedicine;
+	vector<Expenses> Groceries;
+	vector<Expenses> RestaurantAndEntertainment;
+	vector<Expenses> TrevelingAndFuel;
+	vector<Expenses> TransfersAndOther;	
+	void choice(Expenses obj);
 };
 
-struct ExpiryDate {
+class ExpiryDate {
 	int mm;
 	int yy;
+public:
 	ExpiryDate(int mm, int yy) : mm{ mm }, yy{ yy } {};
 	friend ostream& operator << (ostream& out, ExpiryDate expiryDate){
 		out << expiryDate.mm << " / " << expiryDate.yy; return out;
-	}
+	}	
 };
 
 class BancCard
@@ -40,6 +45,7 @@ class BancCard
 	ExpiryDate expiryDate;
 	int CVV;
 	int balans;
+	Categories categories;
 public:
 	BancCard(string nameOnCard, long long cardNumber, ExpiryDate expiryDate, int CVV, int balans = 0) :
 		nameOnCard { nameOnCard },
@@ -48,6 +54,7 @@ public:
 		CVV { CVV }, 
 		balans { balans }
 	{}
+	void addExpense();
 	int getBalanse();
 };
 
