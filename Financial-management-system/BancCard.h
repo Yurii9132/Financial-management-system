@@ -6,26 +6,40 @@ using std::ostream;
 using std::vector;
 using std::endl;
 
+struct Date {
+	int dd;
+	int mm;
+	int yy;
+	Date() {}
+	Date(int dd, int mm, int yy) : dd{ dd }, mm{ mm }, yy{ yy } {}
+	friend ostream& operator << (std::ostream& out, const Date& obj);
+	bool operator == (const Date& obj);
+	void operator = (const Date& obj);
+	bool operator < (const Date& obj);
+};
+
 class Expenses
 {
+	Date date;
 	string name;
-	int cost;
+	double cost;
 public:
-	Expenses(string name, int cost) : name{ name }, cost{ cost } {}
-	Expenses(Expenses&& expenses) : name{ name }, cost{ cost } {}
-	friend ostream& operator << (ostream& out, Expenses expenses) {
-		out << expenses.name << " --\t" << expenses.cost << endl;
-	}
+	Expenses() : Expenses({0, 0, 0}, "", 0) {}
+	Expenses(Date date, string name, double cost) : date{ date }, name { name }, cost{ cost } {}
+	friend ostream& operator << (ostream& out, Expenses expenses);
+	double getCost() { return cost; }
 };
 
 struct Categories {
-public:
+protected:
 	vector<Expenses> SportAndMedicine;
 	vector<Expenses> Groceries;
 	vector<Expenses> RestaurantAndEntertainment;
 	vector<Expenses> TrevelingAndFuel;
 	vector<Expenses> TransfersAndOther;	
-	void choice(Expenses obj);
+public:
+	void selectCategory(Date date, string name, double sum);
+	void showSumForEachCategory();
 };
 
 class ExpiryDate {
@@ -33,9 +47,7 @@ class ExpiryDate {
 	int yy;
 public:
 	ExpiryDate(int mm, int yy) : mm{ mm }, yy{ yy } {};
-	friend ostream& operator << (ostream& out, ExpiryDate expiryDate){
-		out << expiryDate.mm << " / " << expiryDate.yy; return out;
-	}	
+	friend ostream& operator << (ostream& out, ExpiryDate expiryDate);
 };
 
 class BancCard
@@ -44,17 +56,21 @@ class BancCard
 	long long cardNuber;
 	ExpiryDate expiryDate;
 	int CVV;
-	int balans;
+	double balans;
 	Categories categories;
+	Expenses expenses;
 public:
-	BancCard(string nameOnCard, long long cardNumber, ExpiryDate expiryDate, int CVV, int balans = 0) :
+	BancCard(string nameOnCard, long long cardNumber, ExpiryDate expiryDate, int CVV, double balans = 0.0) :
 		nameOnCard { nameOnCard },
 		cardNuber { cardNuber }, 
 		expiryDate { expiryDate },
 		CVV { CVV }, 
-		balans { balans }
+		balans { balans }		
 	{}
+	double getBalanse();
 	void addExpense();
-	int getBalanse();
+	void listExpenses() {
+		categories.showSumForEachCategory();
+	}
 };
 
