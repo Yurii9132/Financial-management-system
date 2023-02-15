@@ -21,9 +21,9 @@ void Categories::selectCategory(Date date, string name, double sum)
 	cin >> choice;
 	switch (choice)
 	{
-	case 1:SportAndMedicine.push_back(obj);
+	case 1:Groceries.push_back(obj);
 		break;
-	case 2:Groceries.push_back(obj);
+	case 2:SportAndMedicine.push_back(obj);
 		break;
 	case 3:RestaurantAndEntertainment.push_back(obj);
 		break;
@@ -34,6 +34,7 @@ void Categories::selectCategory(Date date, string name, double sum)
 	}
 	cin.ignore();
 	cin.clear();
+	system("cls");
 }
 
 void Categories::showSumForEachCategory()
@@ -50,6 +51,14 @@ void Categories::showSumForEachCategory()
 	cout << "4. Treveling and fuel= " << a << endl; a = 0;
 	for (auto ex : TransfersAndOther) a += ex.getCost();
 	cout << "5. Transfers and other= " << a << endl;
+}
+
+void Categories::topThreeExpensesPerWeek()
+{
+}
+
+void Categories::topThreeExpensesPerMonth()
+{
 }
 
 
@@ -120,4 +129,14 @@ bool Date::operator<(const Date& obj)
 			else  return false;
 		}
 	}
+}
+
+int Date::getDay()
+{
+	return dd;
+}
+
+int Date::getMonth()
+{
+	return mm;
 }

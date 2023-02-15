@@ -6,16 +6,19 @@ using std::ostream;
 using std::vector;
 using std::endl;
 
-struct Date {
+class Date {
 	int dd;
 	int mm;
 	int yy;
+public:
 	Date() {}
 	Date(int dd, int mm, int yy) : dd{ dd }, mm{ mm }, yy{ yy } {}
 	friend ostream& operator << (std::ostream& out, const Date& obj);
 	bool operator == (const Date& obj);
 	void operator = (const Date& obj);
 	bool operator < (const Date& obj);
+	int getDay();
+	int getMonth();
 };
 
 class Expenses
@@ -40,6 +43,8 @@ protected:
 public:
 	void selectCategory(Date date, string name, double sum);
 	void showSumForEachCategory();
+	void topThreeExpensesPerWeek();
+	void topThreeExpensesPerMonth();
 };
 
 class ExpiryDate {
