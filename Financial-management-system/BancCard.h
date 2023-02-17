@@ -11,7 +11,6 @@ class Date {
 	int mm;
 	int yy;
 public:
-	Date() {}
 	Date(int dd, int mm, int yy) : dd{ dd }, mm{ mm }, yy{ yy } {}
 	friend ostream& operator << (std::ostream& out, const Date& obj);
 	bool operator == (const Date& obj);
@@ -21,30 +20,27 @@ public:
 	int getMonth();
 };
 
-class Expenses
+enum Categories { 
+	Groceries = 1, Sport_and_medicine, Restaurants_and_entertainment,
+	Treveling_and_fuel, Transfers_and_other
+};
+
+
+class Expense
 {
 	Date date;
 	string name;
 	double cost;
+	int categorie;
 public:
-	Expenses() : Expenses({0, 0, 0}, "", 0) {}
-	Expenses(Date date, string name, double cost) : date{ date }, name { name }, cost{ cost } {}
-	friend ostream& operator << (ostream& out, Expenses expenses);
+	Expense() : Expense({0, 0, 0}, "", 0, 0) {}
+	Expense(Date date, string name, double cost, int catogorie) : date{ date }, name{ name }, cost{ cost }, categorie{ catogorie} {}
+	friend ostream& operator << (ostream& out, Expense expenses);
+	void operator = (Expense obj);
 	double getCost() { return cost; }
-};
-
-struct Categories {
-protected:
-	vector<Expenses> SportAndMedicine;
-	vector<Expenses> Groceries;
-	vector<Expenses> RestaurantAndEntertainment;
-	vector<Expenses> TrevelingAndFuel;
-	vector<Expenses> TransfersAndOther;	
-public:
-	void selectCategory(Date date, string name, double sum);
-	void showSumForEachCategory();
-	void topThreeExpensesPerWeek();
-	void topThreeExpensesPerMonth();
+	Date getDate() { return date; }
+	string getName() { return name; }
+	double getCategorie() { return categorie; }
 };
 
 class ExpiryDate {
@@ -58,12 +54,11 @@ public:
 class BancCard
 {
 	string nameOnCard;
-	long long cardNuber;
+	const long long cardNuber;
 	ExpiryDate expiryDate;
-	int CVV;
-	double balans;
-	Categories categories;
-	Expenses expenses;
+	const int CVV;
+	double balans;	
+	vector<Expense> expenses;
 public:
 	BancCard(string nameOnCard, long long cardNumber, ExpiryDate expiryDate, int CVV, double balans = 0.0) :
 		nameOnCard { nameOnCard },
@@ -74,8 +69,8 @@ public:
 	{}
 	double getBalanse();
 	void addExpense();
-	void listExpenses() {
-		categories.showSumForEachCategory();
-	}
+	void listExpenses();
+	void topThreeExpensesPerWeek();
+	void topThreeExpensesPerMonth();
 };
 

@@ -2,65 +2,10 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <numeric>
 using std::cout;
 using std::cin;
 using std::string;
-
-
-void Categories::selectCategory(Date date, string name, double sum)
-{
-	Expenses obj(date, name, sum);
-	int choice;
-	cout << "Please select one of the provided categories:\n";
-	cout << "(press 1, 2, 3, 4, 5 to choose)\n";
-	cout << "1. Groceries\n";
-	cout << "2. Sport and medicine\n";
-	cout << "3. Restaurants and entertainment\n";
-	cout << "4. Treveling and fuel\n";
-	cout << "5. Transfers and other\n";
-	cin >> choice;
-	switch (choice)
-	{
-	case 1:Groceries.push_back(obj);
-		break;
-	case 2:SportAndMedicine.push_back(obj);
-		break;
-	case 3:RestaurantAndEntertainment.push_back(obj);
-		break;
-	case 4:TrevelingAndFuel.push_back(obj);
-		break;
-	case 5:TransfersAndOther.push_back(obj);
-		break;
-	}
-	cin.ignore();
-	cin.clear();
-	system("cls");
-}
-
-void Categories::showSumForEachCategory()
-{
-	system("cls");
-	double a = 0;
-	for (auto ex : Groceries) a += ex.getCost();
-	cout << "1. Groceries = " << a << endl; a = 0;
-	for (auto ex : SportAndMedicine) a += ex.getCost();
-	cout << "2. Sport and medicine= " << a << endl; a = 0;
-	for (auto ex : RestaurantAndEntertainment) a += ex.getCost();
-	cout << "3. Restaurants and entertainment= " << a << endl; a = 0;
-	for (auto ex : TrevelingAndFuel) a += ex.getCost();
-	cout << "4. Treveling and fuel= " << a << endl; a = 0;
-	for (auto ex : TransfersAndOther) a += ex.getCost();
-	cout << "5. Transfers and other= " << a << endl;
-}
-
-void Categories::topThreeExpensesPerWeek()
-{
-}
-
-void Categories::topThreeExpensesPerMonth()
-{
-}
-
 
 
 double BancCard::getBalanse()
@@ -72,7 +17,7 @@ void BancCard::addExpense()
 {
 	string name;
 	double sum;
-	int dd, mm, yyyy;
+	int dd, mm, yyyy, categorie;
 	cout << "Enter date(dd mm yyyy):\n";
 	cin >> dd >> mm >> yyyy;
 	Date date(dd, mm, yyyy);
@@ -83,9 +28,95 @@ void BancCard::addExpense()
 	cout << "Enter sum\n";
 	cin >> sum;
 	system("cls");
-	categories.selectCategory(date , name, sum);
+	cout << "Please select one of the provided categories:\n";
+	cout << "(press 1, 2, 3, 4, 5 to choose)\n";
+	cout << "1. Groceries\n";
+	cout << "2. Sport and medicine\n";
+	cout << "3. Restaurants and entertainment\n";
+	cout << "4. Treveling and fuel\n";
+	cout << "5. Transfers and other\n";
+	cin >> categorie;
+	Expense obj(date, name, sum, categorie);
+	expenses.push_back(obj);
 	balans -= sum;	
+	system("cls");
 }
+
+void BancCard::listExpenses()
+{
+	int n;
+	double groceries = 0,
+		   sport_and_medicine = 0,
+		   restaurants_and_entertainment = 0,
+		   treveling_and_fuel = 0,
+		   transfers_and_other = 0;
+	for (auto cat : expenses) {
+		n = cat.getCategorie();
+		switch (n)
+		{
+		case Categories::Groceries: groceries += cat.getCost();
+			break;
+		case Categories::Sport_and_medicine: sport_and_medicine += cat.getCost();
+			break;
+		case Categories::Restaurants_and_entertainment: restaurants_and_entertainment += cat.getCost();
+			break;
+		case Categories::Treveling_and_fuel: treveling_and_fuel += cat.getCost();
+			break;
+		case Categories::Transfers_and_other: transfers_and_other += cat.getCost();
+			break;
+		}		
+	}
+	cout << "1. Groceries: " << groceries << endl;
+	cout << "2. Sport and medicine: " << sport_and_medicine << endl;
+	cout << "3. Restaurants and entertainment: " << restaurants_and_entertainment << endl;
+	cout << "4. Treveling and fuel: " << treveling_and_fuel << endl;
+	cout << "5. Transfers and other: " << transfers_and_other << endl;
+}
+
+void BancCard::topThreeExpensesPerWeek()
+{
+}
+
+void BancCard::topThreeExpensesPerMonth()
+{
+	int mm;
+	cout << "Enter number of the month\n";
+	cin >> mm;
+	vector<Expense> monthExpenses;
+	for (auto exp : expenses) {
+		if (exp.getDate().getMonth() == mm)
+		{
+			monthExpenses.push_back(exp);
+		}
+	}
+	sort(monthExpenses.begin(), monthExpenses.end(),
+		[](Expense& obj, Expense& objNext)
+		{
+				if (obj.getCost() < objNext.getCost()) return true;				
+		});
+	int n;
+	for (int i = 0; i < 3; i++)
+	{
+		n = monthExpenses[i].getCategorie();
+		switch (n)
+		{
+		case Categories::Groceries: cout << "Categorie groceries\n";
+			break;
+		case Categories::Sport_and_medicine: cout << "Categorie sport and medicine\n";
+			break;
+		case Categories::Restaurants_and_entertainment: cout << "Categorie restaurants and entertainment\n";
+			break;
+		case Categories::Treveling_and_fuel: cout << "Categorie treveling and fuel\n";
+			break;
+		case Categories::Transfers_and_other: cout << "Categorie transfers and other\n";
+			break;
+		}
+		cout << "Expense's date" << monthExpenses[i].getDate() << endl;
+		cout << "Expense's name: " << monthExpenses[i].getName() << endl;
+		cout << "Sum $" << monthExpenses[i].getCost() << endl;
+	}
+}
+
 
 ostream& operator<<(std::ostream& out, const Date& obj)
 {
@@ -93,11 +124,13 @@ ostream& operator<<(std::ostream& out, const Date& obj)
 	return out;
 }
 
-ostream& operator<<(ostream& out, Expenses expenses)
+ostream& operator<<(ostream& out, Expense expenses)
 {
 	out << expenses.date << ":\t" << expenses.name << " --\t" << expenses.cost << endl;
 	return out;
 }
+
+
 
 ostream& operator<<(ostream& out, ExpiryDate expiryDate)
 {
@@ -139,4 +172,11 @@ int Date::getDay()
 int Date::getMonth()
 {
 	return mm;
+}
+
+void Expense::operator=(Expense obj)
+{
+	this->date = obj.date;
+	this->name = obj.name;
+	this->cost = obj.cost;
 }
