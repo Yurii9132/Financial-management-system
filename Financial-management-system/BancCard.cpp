@@ -34,12 +34,25 @@ void BancCard::addExpense()
 	cout << "2. Sport and medicine\n";
 	cout << "3. Restaurants and entertainment\n";
 	cout << "4. Treveling and fuel\n";
-	cout << "5. Transfers and other\n";
+	cout << "5. Clothes and other\n";
 	cin >> categorie;
 	Expense obj(date, name, sum, categorie);
 	expenses.push_back(obj);
 	balans -= sum;	
 	system("cls");
+}
+
+void BancCard::addExpense(Expense obj)
+{
+	expenses.push_back(obj);
+	balans -= obj.getCost();
+}
+
+void BancCard::addExpense(Date date, string name, double cost, int categorie)
+{
+	Expense obj(date, name, cost, categorie);
+	expenses.push_back(obj);
+	balans -= cost;
 }
 
 void BancCard::listExpenses()
@@ -49,7 +62,7 @@ void BancCard::listExpenses()
 		   sport_and_medicine = 0,
 		   restaurants_and_entertainment = 0,
 		   treveling_and_fuel = 0,
-		   transfers_and_other = 0;
+		   clothes_and_other = 0;
 	for (auto cat : expenses) {
 		n = cat.getCategorie();
 		switch (n)
@@ -62,7 +75,7 @@ void BancCard::listExpenses()
 			break;
 		case Categories::Treveling_and_fuel: treveling_and_fuel += cat.getCost();
 			break;
-		case Categories::Transfers_and_other: transfers_and_other += cat.getCost();
+		case Categories::Clothes_and_other: clothes_and_other += cat.getCost();
 			break;
 		}		
 	}
@@ -70,7 +83,7 @@ void BancCard::listExpenses()
 	cout << "2. Sport and medicine: " << sport_and_medicine << endl;
 	cout << "3. Restaurants and entertainment: " << restaurants_and_entertainment << endl;
 	cout << "4. Treveling and fuel: " << treveling_and_fuel << endl;
-	cout << "5. Transfers and other: " << transfers_and_other << endl;
+	cout << "5. Clothes and other: " << clothes_and_other << endl;
 }
 
 void BancCard::topThreeExpensesPerWeek()
@@ -89,44 +102,54 @@ void BancCard::topThreeExpensesPerMonth()
 			monthExpenses.push_back(exp);
 		}
 	}
-	sort(monthExpenses.begin(), monthExpenses.end(),
-		[](Expense& obj, Expense& objNext)
-		{
-				if (obj.getCost() < objNext.getCost()) return true;				
+	/*for_each(monthExpenses.begin(), monthExpenses.end(), [](Expense& obj) {
+		cout << obj;
+		});*/
+	sort(monthExpenses.begin(), monthExpenses.end(), [](Expense& obj, Expense& objNext) {
+		if (obj.getCost() < objNext.getCost()) return false;
 		});
-	int n;
-	for (int i = 0; i < 3; i++)
+
+	int n = 1;
+	/*/for (auto it = monthExpenses.begin(); it != monthExpenses.end() && it < (monthExpenses.begin() + 3); it++)
 	{
-		n = monthExpenses[i].getCategorie();
-		switch (n)
-		{
-		case Categories::Groceries: cout << "Categorie groceries\n";
-			break;
-		case Categories::Sport_and_medicine: cout << "Categorie sport and medicine\n";
-			break;
-		case Categories::Restaurants_and_entertainment: cout << "Categorie restaurants and entertainment\n";
-			break;
-		case Categories::Treveling_and_fuel: cout << "Categorie treveling and fuel\n";
-			break;
-		case Categories::Transfers_and_other: cout << "Categorie transfers and other\n";
-			break;
-		}
-		cout << "Expense's date" << monthExpenses[i].getDate() << endl;
-		cout << "Expense's name: " << monthExpenses[i].getName() << endl;
-		cout << "Sum $" << monthExpenses[i].getCost() << endl;
+		cout << n++ << ". " << *it;
+		;
+	}*/
+	for (int i = 0; i < 3 && i < monthExpenses.size(); i++)
+	{
+		cout << i + 1 << ". " << monthExpenses[i];
+	}
+	if (!monthExpenses.size())
+	{
+		cout << "No spending this month\n";
 	}
 }
 
 
 ostream& operator<<(std::ostream& out, const Date& obj)
 {
-	out << "Date: " << obj.dd << "/" << obj.mm << "/" << obj.yy << "." << endl;
+	out << obj.dd << "/" << obj.mm << "/" << obj.yy;
 	return out;
 }
 
 ostream& operator<<(ostream& out, Expense expenses)
 {
-	out << expenses.date << ":\t" << expenses.name << " --\t" << expenses.cost << endl;
+	out << expenses.date << ":\t";
+	out << "$" << expenses.cost << "\t";
+	out << expenses.name << "   \t";
+	switch (expenses.categorie)
+	{
+	case Categories::Groceries: out << " Groceries\n";
+		break;
+	case Categories::Sport_and_medicine: out << " Sport and medicine\n";
+		break;
+	case Categories::Restaurants_and_entertainment: out << " Restaurants and entertainment\n";
+		break;
+	case Categories::Treveling_and_fuel: out << " Treveling and fuel\n";
+		break;
+	case Categories::Clothes_and_other: out << " Clothes and other\n";
+		break;
+	}
 	return out;
 }
 

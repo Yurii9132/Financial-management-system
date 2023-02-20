@@ -22,7 +22,7 @@ public:
 
 enum Categories { 
 	Groceries = 1, Sport_and_medicine, Restaurants_and_entertainment,
-	Treveling_and_fuel, Transfers_and_other
+	Treveling_and_fuel, Clothes_and_other
 };
 
 
@@ -41,6 +41,7 @@ public:
 	Date getDate() { return date; }
 	string getName() { return name; }
 	double getCategorie() { return categorie; }
+
 };
 
 class ExpiryDate {
@@ -69,6 +70,8 @@ public:
 	{}
 	double getBalanse();
 	void addExpense();
+	void addExpense(Expense obj);
+	void addExpense(Date date, string name, double cost, int categorie);
 	void listExpenses();
 	void topThreeExpensesPerWeek();
 	void topThreeExpensesPerMonth();
