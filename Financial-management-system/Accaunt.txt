@@ -1,0 +1,10 @@
+1222
+20	2	2023	20	2	Ball	
+20	2	2023	7	2	Goggles	
+20	2	2023	3	1	Juse	
+20	2	2023	13	5	Slippers	
+20	2	2023	102	4	Bus ticket	
+20	1	2023	600	5	Phone	
+20	2	2023	8	2	Toothpaste	
+27	2	2023	10	3	Burger	
+27	2	2023	15	3	Cinema: Avatar 2	1222

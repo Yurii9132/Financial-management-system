@@ -3,10 +3,13 @@
 #include <string>
 #include <algorithm>
 #include <numeric>
+#include <fstream>
+
 using std::cout;
 using std::cin;
 using std::string;
 
+const char BancCard::path[50] = "Accaunt.txt";
 
 double BancCard::getBalanse()
 {
@@ -55,7 +58,7 @@ void BancCard::addExpense(Date date, string name, double cost, int categorie)
 	balans -= cost;
 }
 
-void BancCard::listExpenses()
+void BancCard::listCategoriesSummery()
 {
 	int n;
 	double groceries = 0,
@@ -86,6 +89,13 @@ void BancCard::listExpenses()
 	cout << "5. Clothes and other: " << clothes_and_other << endl;
 }
 
+void BancCard::listExpenses()
+{
+	for (auto exp : expenses) {
+		cout << exp << endl;
+	}
+}
+
 void BancCard::topThreeExpensesPerWeek()
 {
 }
@@ -106,22 +116,83 @@ void BancCard::topThreeExpensesPerMonth()
 		cout << obj;
 		});*/
 	sort(monthExpenses.begin(), monthExpenses.end(), [](Expense& obj, Expense& objNext) {
-		if (obj.getCost() < objNext.getCost()) return false;
+		if (obj.getCost() < objNext.getCost()) return true;
+		else return false;
 		});
 
 	int n = 1;
-	/*/for (auto it = monthExpenses.begin(); it != monthExpenses.end() && it < (monthExpenses.begin() + 3); it++)
+	/*for (auto it = monthExpenses.begin(); it != monthExpenses.end() && it < (monthExpenses.begin() + 3); it++)
 	{
 		cout << n++ << ". " << *it;
 		;
 	}*/
 	for (int i = 0; i < 3 && i < monthExpenses.size(); i++)
 	{
-		cout << i + 1 << ". " << monthExpenses[i];
+		cout << i + 1 << ". " << monthExpenses[i] << endl;
 	}
 	if (!monthExpenses.size())
 	{
-		cout << "No spending this month\n";
+		cout << "No spending found in the selected month\n";
+	}
+}
+
+void BancCard::pushList(vector<Expense> readFromFile)
+{
+	this->expenses.clear();
+	for (auto exp : readFromFile) {
+		this->expenses.push_back(exp);
+	}
+}
+
+vector<Expense> BancCard::getListOfExpenses()
+{
+	return expenses;
+}
+
+void BancCard::writeToFile()
+{
+	std::ofstream out;
+	out.open(path, std::ios::out);
+	if (!out.is_open())
+		cout << "File opening misstake.";
+	else {
+		out << balans << endl;
+		for (int i = 0; i < expenses.size(); i++) {
+			out << expenses[i].getDate().getDay() << "\t";
+			out << expenses[i].getDate().getMonth() << "\t";
+			out << expenses[i].getDate().getYear() << "\t";
+			out << expenses[i].getCost() << "\t";
+			out << expenses[i].getCategorie() << "\t";
+			out << expenses[i].getName() << "\t";
+			if (i < expenses.size() - 1) out << endl;
+		}
+		out << balans;
+	}
+}
+
+void BancCard::readFromFile()
+{
+	std::ifstream in;
+	int read_dd, read_mm, read_yy, read_categorie;
+	double read_cost;
+	string read_name;
+	Date date;
+	Expense read;
+	in.open(path, std::ios::in);
+	if (!in.is_open())
+		cout << "File opening misstake.";
+	else {
+		in >> this->balans;
+		while (!in.eof())
+		{
+			in >> read_dd;
+			in >> read_mm;
+			in >> read_yy;
+			in >> read_cost;
+			in >> read_categorie;
+			getline(in, read_name);
+			expenses.push_back(Expense({ read_dd, read_mm, read_yy }, read_name, read_cost, read_categorie));
+		}
 	}
 }
 
@@ -139,15 +210,15 @@ ostream& operator<<(ostream& out, Expense expenses)
 	out << expenses.name << "   \t";
 	switch (expenses.categorie)
 	{
-	case Categories::Groceries: out << " Groceries\n";
+	case Categories::Groceries: out << " Groceries.";
 		break;
-	case Categories::Sport_and_medicine: out << " Sport and medicine\n";
+	case Categories::Sport_and_medicine: out << " Sport and medicine.";
 		break;
-	case Categories::Restaurants_and_entertainment: out << " Restaurants and entertainment\n";
+	case Categories::Restaurants_and_entertainment: out << " Restaurants and entertainment.";
 		break;
-	case Categories::Treveling_and_fuel: out << " Treveling and fuel\n";
+	case Categories::Treveling_and_fuel: out << " Treveling and fuel.";
 		break;
-	case Categories::Clothes_and_other: out << " Clothes and other\n";
+	case Categories::Clothes_and_other: out << " Clothes and other.";
 		break;
 	}
 	return out;
@@ -197,9 +268,15 @@ int Date::getMonth()
 	return mm;
 }
 
-void Expense::operator=(Expense obj)
+int Date::getYear()
+{
+	return yy;
+}
+
+void Expense::operator=(const Expense& obj)
 {
 	this->date = obj.date;
 	this->name = obj.name;
 	this->cost = obj.cost;
+	this->categorie = obj.categorie;
 }

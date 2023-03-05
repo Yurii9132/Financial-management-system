@@ -1,4 +1,2 @@
-﻿  BancCard.cpp
-D:\Git-repository\Financial-management-system\Financial-management-system\BancCard.cpp(67,23): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-D:\Git-repository\Financial-management-system\Financial-management-system\BancCard.cpp(110): warning C4715: `BancCard::topThreeExpensesPerMonth'::`2'::<lambda_1>::operator(): значение возвращается не при всех путях выполнения
+﻿  Financial-management-system.cpp
   Financial-management-system.vcxproj -> D:\Git-repository\Financial-management-system\x64\Debug\Financial-management-system.exe
